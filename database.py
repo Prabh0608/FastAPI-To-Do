@@ -10,4 +10,4 @@ async def dataBase():
         await client.admin.command('ping')
         print('Connected with Database successfully!')
     except Exception as e:
-        print('Error while connecting your DB')
+        raise('Error while connecting your DB')
