@@ -24,6 +24,5 @@ async def update_task(taskID: str, updateModel: updateTask):
     
 
 @router.delete('/task/{taskID}', status_code=status.HTTP_204_NO_CONTENT)
-async def deleteTask(taskID):
-    await collection.find_one_and_delete({"_id": ObjectId(taskID)})
-    return
+async def delete_task(taskID: str):
+    return await taskController.deleteTask(taskID)

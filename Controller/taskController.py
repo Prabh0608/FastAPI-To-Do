@@ -46,3 +46,12 @@ async def updateTask(taskID, updateModel):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e) 
         )
+
+async def deleteTask(taskID):
+    deletedTask = await collection.find_one_and_delete({"_id": ObjectId(taskID)})
+    if not deletedTask:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Task not found."
+        )
+    return
