@@ -2,8 +2,8 @@ from fastapi import APIRouter
 from Model.userModel import userResponse, userCreate
 from Controller.userController import createUser
 
-router = APIRouter()
+userRouter = APIRouter()
 
-@router.post('/register', response_model=userResponse)
+@userRouter.post('/register', response_model=userResponse)
 async def create_user(userCreate: userCreate):
-    return await  createUser(userCreate) 
+    return await createUser(userCreate) 

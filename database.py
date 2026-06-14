@@ -5,6 +5,8 @@ db = settings.dataBaseUri
 client = AsyncIOMotorClient(db)
 database = client["Tasks"]
 collection = database["Task"]
+userDatabase = client["Users"]
+userCollection = userDatabase["User"]
 async def dataBase():
     try:
         await client.admin.command('ping')
