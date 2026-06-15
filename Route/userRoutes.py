@@ -5,9 +5,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 userRouter = APIRouter()
 
-@userRouter.post('/register', response_model=userResponse)
-async def create_user(userCreate: userCreate):
-    return await createUser(userCreate) 
+@userRouter.post('/register')
+async def create_user(userCreate: userCreate, response: Response):
+    return await createUser(userCreate, response) 
 
 @userRouter.post('/logIn')
 async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends()):

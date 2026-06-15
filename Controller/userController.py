@@ -4,9 +4,20 @@ from fastapi import HTTPException, status
 import jwt
 from config import settings
 
+def createJWT(user, response, msg):
+    token = jwt.encode({"sub": str(user["_id"])}, settings.jwt_key, "HS256")
+    response.set_cookie(key="JWT", value=token, httponly=True, secure=True)
+    return {"status": "Success", "message": msg}
 
-async def createUser(userCreate):
+async def createUser(userCreate, response):
     password = userCreate.password.get_secret_value()
+    email = userCreate.email
+    existing_user = await userCollection.find_one({"email": email})
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="An account with this email already exists.",
+        )
     
     pwd_bytes = password.encode('utf-8')
     salt = bcrypt.gensalt()
@@ -20,9 +31,7 @@ async def createUser(userCreate):
 
     await userCollection.insert_one(userDict)
 
-    userDict["id"] = str(userDict["_id"])
-
-    return userDict
+    return createJWT(userDict, response, "Successfully registered!")
 
 async def loginUser(formData, response):
     email = formData.username
@@ -30,9 +39,7 @@ async def loginUser(formData, response):
     user = await userCollection.find_one({"email": email})
     if user:
         if bcrypt.checkpw(password, user["hashed_password"]):
-            token = jwt.encode({"sub": str(user["_id"])}, settings.jwt_key, "HS256")
-            response.set_cookie(key="JWT", value=token, httponly=True, secure=True)
-            return {"status": "Success", "message": "Cookie Created"}
+            return createJWT(user, response,  "Successfully Logged In!")
         
     raise HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
