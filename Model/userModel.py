@@ -1,5 +1,4 @@
 from pydantic import BaseModel, EmailStr, SecretStr, Field, model_validator
-from datetime import datetime
 from typing_extensions import Self
 
 class userCreate(BaseModel):
@@ -20,12 +19,4 @@ class userCreate(BaseModel):
 
 class userResponse(BaseModel):
     id: str
-    name: str
     email: EmailStr
-
-class userInDB(BaseModel):
-    id: str
-    name: str
-    email: EmailStr
-    hashed_password: str
-    created_at: datetime 
