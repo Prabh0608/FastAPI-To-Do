@@ -6,7 +6,7 @@ from bson import ObjectId
 import jwt
 
 async def protect(JWT: str = Cookie(None)):
-    if JWT == None:
+    if not JWT:
         raise AppError(message="You are not logged in! Please log in to get Access.", status_code=401)
     try:
         payload = jwt.decode(JWT, settings.jwt_key, settings.jwt_algo)

@@ -41,3 +41,14 @@ async def loginUser(formData, response):
             return createJWT(user, response,  "Successfully Logged In!")
         
     raise AppError(message="Incorrect email or password", status_code=401)
+
+async def logoutUser(response):
+    response.set_cookie(
+        key="JWT",
+        value="",              
+        max_age=0,             
+        httponly=True,          
+        secure=True             
+    )
+    
+    return {"success": True, "message": "Logged out successfully."}

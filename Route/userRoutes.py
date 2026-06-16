@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Response
 from Model.userModel import userResponse, userCreate
-from Controller.userController import createUser, loginUser
+from Controller.userController import createUser, loginUser, logoutUser
 from fastapi.security import OAuth2PasswordRequestForm
 
 userRouter = APIRouter()
@@ -12,3 +12,7 @@ async def create_user(userCreate: userCreate, response: Response):
 @userRouter.post('/logIn')
 async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends()):
     return await loginUser(form_data, response)
+
+@userRouter.post("/logout")
+async def logout(response: Response):
+    return await logoutUser(response=response)
