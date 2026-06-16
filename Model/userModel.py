@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr, SecretStr, Field, model_validator
+from pydantic import BaseModel, EmailStr, SecretStr, Field, model_validator,field_validator
 from typing_extensions import Self
+from zxcvbn import zxcvbn
 
 class userCreate(BaseModel):
     name: str = Field(
@@ -10,6 +11,16 @@ class userCreate(BaseModel):
     email: EmailStr
     password: SecretStr = Field(min_length=8)
     confirmPassword: SecretStr
+
+    @field_validator("password")
+    @classmethod
+    def strongPass(cls, value: SecretStr) -> SecretStr:
+        rawPass = value.get_secret_value()
+        results = zxcvbn(rawPass)
+        if results["score"] < 2:
+            feedback = results["feedback"]["warning"] or "Password is too guessable."
+            raise ValueError(f"Weak password: {feedback}")  
+        return value
 
     @model_validator(mode='after')
     def passwordVerify(self) -> Self:
