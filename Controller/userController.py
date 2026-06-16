@@ -1,12 +1,12 @@
 import bcrypt
 from database import userCollection
-from fastapi import HTTPException, status
 import jwt
 from config import settings
 from utils.AppError import AppError
+import time
 
 def createJWT(user, response, msg):
-    token = jwt.encode({"sub": str(user["_id"])}, settings.jwt_key, "HS256")
+    token = jwt.encode({"sub": str(user["_id"]), "exp": int(time.time()) + 1800}, settings.jwt_key, settings.jwt_algo)
     response.set_cookie(key="JWT", value=token, httponly=True, secure=True)
     return {"status": "Success", "message": msg}
 
